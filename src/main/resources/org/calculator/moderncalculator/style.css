@@ -1,0 +1,84 @@
+.root-pane {
+    -fx-background-color: #202020;
+}
+
+.display-field {
+    -fx-background-color: #202020;
+    -fx-text-fill: white;
+    -fx-font-size: 48px;
+    -fx-padding: 10px;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.history-display-field {
+    -fx-background-color: #202020;
+    -fx-text-fill: grey;
+    -fx-font-size: 48px;
+    -fx-padding: 10px;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.button {
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-pref-height: 60px;
+    -fx-pref-width: 80px;
+    -fx-background-radius: 5;
+    -fx-border-color: #202020;
+    -fx-border-width: 1;
+}
+
+.button:hover {
+    -fx-background-color: #454545;
+}
+
+.button:pressed {
+    -fx-background-color: #505050;
+}
+.digit-button {
+    -fx-background-color: #404040;
+}
+.digit-button:hover {
+    -fx-background-color: #505050;
+}
+.digit-button:pressed {
+    -fx-background-color: #5a5a5a;
+}
+
+.operator-button {
+    -fx-background-color: #2a2a2a;
+    -fx-text-fill: #A0A0A0;
+}
+.operator-button:hover {
+    -fx-background-color: #3a3a3a;
+}
+.operator-button:pressed {
+    -fx-background-color: #454545;
+}
+
+
+.equals-button {
+    -fx-background-color: #0078D7;
+}
+.equals-button:hover {
+    -fx-background-color: #005A9E;
+}
+.equals-button:pressed {
+    -fx-background-color: #004C87;
+}
+.control-button {
+    -fx-background-color: #2a2a2a;
+    -fx-text-fill: #A0A0A0;
+}
+.control-button:hover {
+    -fx-background-color: #3a3a3a;
+}
+.control-button:pressed {
+    -fx-background-color: #454545;
+}
