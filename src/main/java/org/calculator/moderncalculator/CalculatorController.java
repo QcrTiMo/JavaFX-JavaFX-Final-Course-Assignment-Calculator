@@ -7,46 +7,57 @@ import javafx.scene.control.TextField;
 
 import java.text.DecimalFormat;
 
-public class CalculatorController {
+public class CalculatorController
+{
 
     @FXML
     private TextField displayField;
     @FXML
     private TextField historyDisplayField;
-
     private String currentInputValue = "0";
     private String historyLog = "";
-
     private double firstOperand = 0;
     private String pendingOperator = "";
     private boolean isAwaitingSecondOperand = false;
     private boolean resultJustDisplayed = true;
 
     @FXML
-    public void initialize() {
+    public void initialize()
+    {
         updateDisplays();
     }
 
     @FXML
-    private void handleDigitAction(ActionEvent event) {
-        if (isDisplayShowingError(displayField.getText())) return;
-
+    private void handleDigitAction(ActionEvent event)
+    {
+        if (isDisplayShowingError(displayField.getText()))
+        {
+            return;
+        }
         String digit = ((Button) event.getSource()).getText();
-
-        if (resultJustDisplayed) {
+        if (resultJustDisplayed)
+        {
             currentInputValue = digit;
             resultJustDisplayed = false;
-            if (!isAwaitingSecondOperand) {
+            if (!isAwaitingSecondOperand)
+            {
                 historyLog = "";
             }
-        } else {
-            if (currentInputValue.equals("0") && !digit.equals(".")) {
+        }
+        else
+        {
+            if (currentInputValue.equals("0") && !digit.equals("."))
+            {
                 currentInputValue = digit;
-            } else if (currentInputValue.equals("-0") && !digit.equals(".")) {
+            }
+            else if (currentInputValue.equals("-0") && !digit.equals("."))
+            {
                 currentInputValue = "-" + digit;
-            } else {
+            }
+            else {
                 String temp = currentInputValue.startsWith("-") ? currentInputValue.substring(1) : currentInputValue;
-                if (temp.replace(".", "").length() < 15) {
+                if (temp.replace(".", "").length() < 15)
+                {
                     currentInputValue += digit;
                 }
             }
@@ -55,28 +66,34 @@ public class CalculatorController {
     }
 
     @FXML
-    private void handleOperatorAction(ActionEvent event) {
+    private void handleOperatorAction(ActionEvent event)
+    {
         String newOperator = ((Button) event.getSource()).getText();
-
-        if (isDisplayShowingError(displayField.getText())) {
+        if (isDisplayShowingError(displayField.getText()))
+        {
             return;
         }
-
-        if (!resultJustDisplayed && isAwaitingSecondOperand) {
-            if (canParseAsNumber(currentInputValue)) {
+        if (!resultJustDisplayed && isAwaitingSecondOperand)
+        {
+            if (canParseAsNumber(currentInputValue))
+            {
                 calculate();
             }
-            else {
+            else
+            {
             }
         }
         try
         {
-            if (currentInputValue.equals("-")) {
+            if (currentInputValue.equals("-"))
+            {
                 displayError("无效输入");
                 return;
             }
             firstOperand = Double.parseDouble(currentInputValue);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             displayError("错误: 无效数字");
             return;
         }
@@ -87,57 +104,63 @@ public class CalculatorController {
         updateDisplays();
     }
 
-
     @FXML
-    private void handleEqualsAction(ActionEvent event) {
-        if (isDisplayShowingError(displayField.getText())) return;
-
-        if (pendingOperator.isEmpty()) {
+    private void handleEqualsAction(ActionEvent event)
+    {
+        if (isDisplayShowingError(displayField.getText()))
+        {
+            return;
+        }
+        if (pendingOperator.isEmpty())
+        {
             historyLog = currentInputValue + " =";
             resultJustDisplayed = true;
             updateDisplays();
             return;
         }
-
-        if (currentInputValue.equals("-")) {
+        if (currentInputValue.equals("-"))
+        {
             displayError("无效输入");
             return;
         }
-
         calculate();
     }
 
-    private void calculate() {
-        if (pendingOperator.isEmpty()) {
+    private void calculate()
+    {
+        if (pendingOperator.isEmpty())
+        {
             return;
         }
-
         double secondOperand;
         String secondOperandStrForHistory = currentInputValue;
-
-        try {
-            if (resultJustDisplayed && isAwaitingSecondOperand) {
+        try
+        {
+            if (resultJustDisplayed && isAwaitingSecondOperand)
+            {
                 secondOperand = firstOperand;
                 secondOperandStrForHistory = formatResult(firstOperand);
             }
-            else {
-                if (currentInputValue.equals("-")) {
+            else
+            {
+                if (currentInputValue.equals("-"))
+                {
                     displayError("无效输入");
                     return;
                 }
                 secondOperand = Double.parseDouble(currentInputValue);
             }
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             displayError("错误: 无效数字");
             return;
         }
-
         historyLog = formatResult(firstOperand) + " " + pendingOperator + " " + secondOperandStrForHistory + " =";
-
         double resultValue = 0;
         boolean error = false;
-
-        switch (pendingOperator) {
+        switch (pendingOperator)
+        {
             case "+":
                 resultValue = firstOperand + secondOperand;
                 break;
@@ -148,25 +171,29 @@ public class CalculatorController {
                 resultValue = firstOperand * secondOperand;
                 break;
             case "÷":
-                if (secondOperand == 0) {
+                if (secondOperand == 0)
+                {
                     displayError("除数不能为零"); error = true;
                 }
-                else {
+                else
+                {
                     resultValue = firstOperand / secondOperand;
                 }
                 break;
             case "%":
-                if (secondOperand == 0) {
+                if (secondOperand == 0)
+                {
                     displayError("模数不能为零"); error = true;
                 }
-                else {
+                else
+                {
                     resultValue = firstOperand % secondOperand;
                 }
                 break;
             default: return;
         }
-
-        if (!error) {
+        if (!error)
+        {
             currentInputValue = formatResult(resultValue);
             firstOperand = resultValue;
         }
@@ -176,7 +203,8 @@ public class CalculatorController {
     }
 
     @FXML
-    private void handleClearAction(ActionEvent event) {
+    private void handleClearAction(ActionEvent event)
+    {
         currentInputValue = "0";
         historyLog = "";
         firstOperand = 0;
@@ -187,14 +215,16 @@ public class CalculatorController {
     }
 
     @FXML
-    private void handleClearEntryAction(ActionEvent event) {
-        if (isDisplayShowingError(displayField.getText())) {
+    private void handleClearEntryAction(ActionEvent event)
+    {
+        if (isDisplayShowingError(displayField.getText()))
+        {
             handleClearAction(event);
             return;
         }
-
         currentInputValue = "0";
-        if (!isAwaitingSecondOperand) {
+        if (!isAwaitingSecondOperand)
+        {
             historyLog = "";
             pendingOperator = "";
         }
@@ -203,14 +233,19 @@ public class CalculatorController {
     }
 
     @FXML
-    private void handleBackspaceAction(ActionEvent event) {
-        if (isDisplayShowingError(displayField.getText())) {
+    private void handleBackspaceAction(ActionEvent event)
+    {
+        if (isDisplayShowingError(displayField.getText()))
+        {
             return;
         }
-        if (resultJustDisplayed && !isAwaitingSecondOperand && !pendingOperator.isEmpty() && !historyLog.endsWith(pendingOperator)) {
+        if (resultJustDisplayed && !isAwaitingSecondOperand && !pendingOperator.isEmpty() && !historyLog.endsWith(pendingOperator))
+        {
             String[] parts = historyLog.split(" ");
-            if (parts.length >= 4 && parts[parts.length - 1].equals("=")) {
-                try {
+            if (parts.length >= 4 && parts[parts.length - 1].equals("="))
+            {
+                try
+                {
                     firstOperand = Double.parseDouble(parts[0]);
                     pendingOperator = parts[1];
                     currentInputValue = parts[2];
@@ -220,14 +255,18 @@ public class CalculatorController {
                     resultJustDisplayed = false;
                     updateDisplays();
                     return;
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     currentInputValue = "0";
                     resultJustDisplayed = true;
                     if (!isAwaitingSecondOperand) historyLog = "";
                     updateDisplays();
                     return;
                 }
-            } else if (parts.length == 2 && parts[1].equals("=")) {
+            }
+            else if (parts.length == 2 && parts[1].equals("="))
+            {
                 currentInputValue = parts[0];
                 historyLog = "";
                 pendingOperator = "";
@@ -236,7 +275,8 @@ public class CalculatorController {
                 return;
             }
         }
-        if (isAwaitingSecondOperand && resultJustDisplayed && historyLog.endsWith(pendingOperator)) {
+        if (isAwaitingSecondOperand && resultJustDisplayed && historyLog.endsWith(pendingOperator))
+        {
             currentInputValue = formatResult(firstOperand);
             historyLog = "";
             pendingOperator = "";
@@ -246,51 +286,71 @@ public class CalculatorController {
             return;
         }
 
-        if (!resultJustDisplayed) {
-            if (!currentInputValue.isEmpty() && !currentInputValue.equals("0")) {
+        if (!resultJustDisplayed)
+        {
+            if (!currentInputValue.isEmpty() && !currentInputValue.equals("0"))
+            {
                 if (isAwaitingSecondOperand && historyLog.endsWith(pendingOperator)
-                        && currentInputValue.length() == 1 && !currentInputValue.equals("0")) {
+                        && currentInputValue.length() == 1 && !currentInputValue.equals("0"))
+                {
                     currentInputValue = "0";
                 }
-                else {
+                else
+                {
                     currentInputValue = currentInputValue.substring(0, currentInputValue.length() - 1);
-                    if (currentInputValue.isEmpty() || currentInputValue.equals("-")) {
+                    if (currentInputValue.isEmpty() || currentInputValue.equals("-"))
+                    {
                         currentInputValue = "0";
                     }
                 }
             }
-            else {
+            else
+            {
                 currentInputValue = "0";
             }
             updateDisplays();
             return;
         }
         currentInputValue = "0";
-        if (!isAwaitingSecondOperand) historyLog = "";
+        if (!isAwaitingSecondOperand)
+        {
+            historyLog = "";
+        }
         updateDisplays();
     }
 
     @FXML
-    private void handleDecimalAction(ActionEvent event) {
-        if (isDisplayShowingError(displayField.getText())) return;
+    private void handleDecimalAction(ActionEvent event)
+    {
+        if (isDisplayShowingError(displayField.getText()))
+        {
+            return;
+        }
 
-        if (resultJustDisplayed) {
+        if (resultJustDisplayed)
+        {
             currentInputValue = "0.";
             resultJustDisplayed = false;
-            if (isAwaitingSecondOperand) {
+            if (isAwaitingSecondOperand)
+            {
             }
-            else {
+            else
+            {
                 historyLog = "";
             }
         }
-        else if (!currentInputValue.contains(".")) {
-            if (currentInputValue.isEmpty()) {
+        else if (!currentInputValue.contains("."))
+        {
+            if (currentInputValue.isEmpty())
+            {
                 currentInputValue = "0.";
             }
-            else if (currentInputValue.equals("-")) {
+            else if (currentInputValue.equals("-"))
+            {
                 currentInputValue += "0.";
             }
-            else {
+            else
+            {
                 currentInputValue += ".";
             }
         }
@@ -298,25 +358,33 @@ public class CalculatorController {
     }
 
     @FXML
-    private void handleSignAction(ActionEvent event) {
-        if (isDisplayShowingError(displayField.getText())) {
+    private void handleSignAction(ActionEvent event)
+    {
+        if (isDisplayShowingError(displayField.getText()))
+        {
             return;
         }
 
-        if (currentInputValue.equals("0") || currentInputValue.equals("0.0")) {
+        if (currentInputValue.equals("0") || currentInputValue.equals("0.0"))
+        {
         }
-        else if (currentInputValue.startsWith("-")) {
+        else if (currentInputValue.startsWith("-"))
+        {
             currentInputValue = currentInputValue.substring(1);
         }
-        else {
+        else
+        {
             currentInputValue = "-" + currentInputValue;
         }
 
-        if (resultJustDisplayed && !isAwaitingSecondOperand) {
-            try {
+        if (resultJustDisplayed && !isAwaitingSecondOperand)
+        {
+            try
+            {
                 firstOperand = Double.parseDouble(currentInputValue);
             }
-            catch (NumberFormatException ignored) {
+            catch (NumberFormatException ignored)
+            {
                 displayError("错误: 无效数字");
                 return;
             }
@@ -325,37 +393,44 @@ public class CalculatorController {
     }
 
     @FXML
-    private void handlePercentageAction(ActionEvent event) {
-        if (isDisplayShowingError(displayField.getText()) || currentInputValue.isEmpty() || currentInputValue.equals("-")) {
+    private void handlePercentageAction(ActionEvent event)
+    {
+        if (isDisplayShowingError(displayField.getText()) || currentInputValue.isEmpty() || currentInputValue.equals("-"))
+        {
             return;
         }
-
         double valueInCurrentInput;
-        try {
+        try
+        {
             valueInCurrentInput = Double.parseDouble(currentInputValue);
         }
-        catch (NumberFormatException e) {
+        catch (NumberFormatException e)
+        {
             displayError("错误");
             return;
         }
 
-        if (!pendingOperator.isEmpty() && isAwaitingSecondOperand) {
+        if (!pendingOperator.isEmpty() && isAwaitingSecondOperand)
+        {
             double percentageResultValue;
             String originalSecondOperandForHistory = currentInputValue;
-
-            if (pendingOperator.equals("+") || pendingOperator.equals("-")) {
+            if (pendingOperator.equals("+") || pendingOperator.equals("-"))
+            {
                 percentageResultValue = firstOperand * (valueInCurrentInput / 100.0);
             }
-            else if (pendingOperator.equals("×") || pendingOperator.equals("÷")) {
+            else if (pendingOperator.equals("×") || pendingOperator.equals("÷"))
+            {
                 percentageResultValue = valueInCurrentInput / 100.0;
             }
-            else {
+            else
+            {
                 percentageResultValue = valueInCurrentInput / 100.0;
             }
             historyLog = formatResult(firstOperand) + " " + pendingOperator + " " + originalSecondOperandForHistory + "%";
             currentInputValue = formatResult(percentageResultValue);
         }
-        else {
+        else
+        {
             historyLog = currentInputValue + "%";
             currentInputValue = formatResult(valueInCurrentInput / 100.0);
             historyLog += " =";
@@ -365,15 +440,21 @@ public class CalculatorController {
     }
 
     @FXML
-    private void handleReciprocalAction(ActionEvent event) {
-        if (isDisplayShowingError(displayField.getText()) || currentInputValue.isEmpty() || currentInputValue.equals("-")) {
+    private void handleReciprocalAction(ActionEvent event)
+    {
+        if (isDisplayShowingError(displayField.getText()) || currentInputValue.isEmpty() || currentInputValue.equals("-"))
+        {
             return;
         }
-        try {
+        try
+        {
             double value = Double.parseDouble(currentInputValue);
-            if (value == 0) {
+            if (value == 0)
+            {
                 displayError("除数不能为零");
-            } else {
+            }
+            else
+            {
                 historyLog = "1/(" + formatResult(value) + ")";
                 value = 1.0 / value;
                 currentInputValue = formatResult(value);
@@ -384,34 +465,42 @@ public class CalculatorController {
                 isAwaitingSecondOperand = false;
                 updateDisplays();
             }
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             displayError("错误");
         }
     }
 
     @FXML
-    private void handleUnaryOperationAction(ActionEvent event) {
-        if (isDisplayShowingError(displayField.getText()) || currentInputValue.isEmpty() || currentInputValue.equals("-")) {
+    private void handleUnaryOperationAction(ActionEvent event)
+    {
+        if (isDisplayShowingError(displayField.getText()) || currentInputValue.isEmpty() || currentInputValue.equals("-"))
+        {
             return;
         }
-
         String operationSymbol = ((Button) event.getSource()).getText();
         String historyOpName;
-        if (operationSymbol.equals("x²")) {
+        if (operationSymbol.equals("x²"))
+        {
             historyOpName = "sqr";
         }
-        else if (operationSymbol.equals("²√x")) {
+        else if (operationSymbol.equals("²√x"))
+        {
             historyOpName = "sqrt";
         }
-        else {
+        else
+        {
             return;
         }
 
         double value;
-        try {
+        try
+        {
             value = Double.parseDouble(currentInputValue);
         }
-        catch (NumberFormatException e) {
+        catch (NumberFormatException e)
+        {
             displayError("错误");
             return;
         }
@@ -420,21 +509,25 @@ public class CalculatorController {
 
         double resultValue = 0;
         boolean error = false;
-        switch (operationSymbol) {
+        switch (operationSymbol)
+        {
             case "x²":
                 resultValue = value * value;
                 break;
             case "²√x":
-                if (value < 0) {
+                if (value < 0)
+                {
                     displayError("无效输入");
                     error = true;
-                } else {
+                }
+                else
+                {
                     resultValue = Math.sqrt(value);
                 }
                 break;
         }
-
-        if (!error) {
+        if (!error)
+        {
             currentInputValue = formatResult(resultValue);
             historyLog += " =";
             firstOperand = resultValue;
@@ -445,55 +538,69 @@ public class CalculatorController {
         }
     }
 
-
-    private void updateDisplays() {
+    private void updateDisplays()
+    {
         String mainText = currentInputValue;
         displayField.setText(mainText);
         String historyText = historyLog;
         historyDisplayField.setText(historyText);
     }
 
-    private String formatResult(double result) {
-        if (Double.isNaN(result)) {
+    private String formatResult(double result)
+    {
+        if (Double.isNaN(result))
+        {
             return "结果未定义";
         }
-        if (Double.isInfinite(result)) {
+        if (Double.isInfinite(result))
+        {
             return "溢出";
         }
         double epsilon = 1E-10;
-        if (Math.abs(result - Math.round(result)) < epsilon && result != 0) {
+        if (Math.abs(result - Math.round(result)) < epsilon && result != 0)
+        {
             return String.format("%d", Math.round(result));
         }
-        else if (Math.abs(result) < epsilon && result !=0) {
+        else if (Math.abs(result) < epsilon && result !=0)
+        {
             return "0";
-        } else {
+        }
+        else
+        {
             DecimalFormat df = new DecimalFormat("#.##########");
             String formatted = df.format(result);
-            if (formatted.startsWith("-,")) {
+            if (formatted.startsWith("-,"))
+            {
                 formatted = "-0." + formatted.substring(2);
             }
-            else if (formatted.startsWith(",")) {
+            else if (formatted.startsWith(","))
+            {
                 formatted = "0." + formatted.substring(1);
             }
-            if (formatted.equals("-0")) {
+            if (formatted.equals("-0"))
+            {
                 return "0";
             }
             return formatted;
         }
     }
 
-    private boolean canParseAsNumber(String s) {
+    private boolean canParseAsNumber(String s)
+    {
         if (s == null || s.isEmpty() || s.equals("-") || s.equals(".") || s.equals("-.")) return false;
-        try {
+        try
+        {
             Double.parseDouble(s);
             return true;
         }
-        catch (NumberFormatException e) {
+        catch (NumberFormatException e)
+        {
             return false;
         }
     }
 
-    private void displayError(String message) {
+    private void displayError(String message)
+    {
         displayField.setText(message);
         historyLog = "";
         currentInputValue = "0";
@@ -503,8 +610,12 @@ public class CalculatorController {
         resultJustDisplayed = true;
     }
 
-    private boolean isDisplayShowingError(String displayText) {
-        if (displayText == null) return false;
+    private boolean isDisplayShowingError(String displayText)
+    {
+        if (displayText == null)
+        {
+            return false;
+        }
         String text = displayText.toLowerCase();
         return text.contains("错误") || text.contains("error") || text.contains("nan") ||
                 text.contains("溢出") || text.contains("未定义") || text.contains("除数不能为零") ||
